@@ -14,6 +14,12 @@ main = hakyll $ do
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
 
+    match (fromList ["pages/about.rst", "pages/contact.markdown"]) $ do
+        route   $ setExtension "html"
+        compile $ pandocCompiler
+            >>= loadAndApplyTemplate "templates/default.html" defaultContext
+            >>= relativizeUrls
+
     match "pages/*" $ do
         route   pagesRoute
         compile copyFileCompiler
@@ -25,12 +31,6 @@ main = hakyll $ do
     match "css/*" $ do
         route   idRoute
         compile compressCssCompiler
-
-    match (fromList ["about.rst", "contact.markdown"]) $ do
-        route   $ setExtension "html"
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/default.html" defaultContext
-            >>= relativizeUrls
 
     match "posts/*" $ do
         route $ setExtension "html"
@@ -77,4 +77,4 @@ postCtx =
     defaultContext
 
 pagesRoute :: Routes
-pagesRoute = gsubRoute "pages" $ const ""
+pagesRoute = gsubRoute "pages/" $ const ""
