@@ -8,8 +8,14 @@ import           Hakyll
 main :: IO ()
 main = hakyll $ do
 
-    match ("CNAME" .||. "robots.txt") $ do
-        route   idRoute
+    match "pages/index.html" $ do
+        route   pagesRoute
+        compile $ getResourceBody
+            >>= loadAndApplyTemplate "templates/default.html" defaultContext
+            >>= relativizeUrls
+
+    match "pages/*" $ do
+        route   pagesRoute
         compile copyFileCompiler
 
     match "images/*" $ do
@@ -19,12 +25,6 @@ main = hakyll $ do
     match "css/*" $ do
         route   idRoute
         compile compressCssCompiler
-
-    match "root/index.html" $ do
-        route   $ constRoute "index.html"
-        compile $ getResourceBody
-            >>= loadAndApplyTemplate "templates/default.html" defaultContext
-            >>= relativizeUrls
 
     match (fromList ["about.rst", "contact.markdown"]) $ do
         route   $ setExtension "html"
@@ -75,3 +75,6 @@ postCtx :: Context String
 postCtx =
     dateField "date" "%B %e, %Y" `mappend`
     defaultContext
+
+pagesRoute :: Routes
+pagesRoute = gsubRoute "pages" $ const ""
