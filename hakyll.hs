@@ -7,6 +7,7 @@ import           Hakyll
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
+
     match "images/*" $ do
         route   idRoute
         compile copyFileCompiler
@@ -42,20 +43,21 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" archiveCtx
                 >>= relativizeUrls
 
-
     match "index.html" $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
-            let indexCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Home"                `mappend`
-                    defaultContext
+            copyFileCompiler
+            getResourceBody >>= relativizeUrls
+        --    posts <- recentFirst =<< loadAll "posts/*"
+        --    let indexCtx =
+        --            listField "posts" postCtx (return posts) `mappend`
+        --            constField "title" "Home"                `mappend`
+        --            defaultContext
 
-            getResourceBody
-                >>= applyAsTemplate indexCtx
-                >>= loadAndApplyTemplate "templates/default.html" indexCtx
-                >>= relativizeUrls
+        --    getResourceBody
+        --        >>= applyAsTemplate indexCtx
+        --        >>= loadAndApplyTemplate "templates/default.html" indexCtx
+        --        >>= relativizeUrls
 
     match "templates/*" $ compile templateCompiler
 
