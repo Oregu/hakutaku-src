@@ -25,19 +25,8 @@ main = hakyll $ do
         route   idRoute
         compile compressCssCompiler
 
-    match "drafts/*" $ do
-        route $ setExtension "html"
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"    postCtx
-            >>= loadAndApplyTemplate "templates/default.html" defaultContext
-            >>= relativizeUrls
-
-    match "posts/*" $ do
-        route $ setExtension "html"
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"    postCtx
-            >>= loadAndApplyTemplate "templates/default.html" defaultContext
-            >>= relativizeUrls
+    match "drafts/*" postRules
+    match "posts/*"  postRules
 
     create ["posts.html"] $ do
         route idRoute
@@ -65,6 +54,13 @@ main = hakyll $ do
 
     match "templates/*" $ compile templateCompiler
 
+postRules :: Rules ()
+postRules = do
+    route $ setExtension "html"
+    compile $ pandocCompiler
+        >>= loadAndApplyTemplate "templates/post.html"    postCtx
+        >>= loadAndApplyTemplate "templates/default.html" defaultContext
+        >>= relativizeUrls
 
 postCtx :: Context String
 postCtx =
