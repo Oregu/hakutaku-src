@@ -17,11 +17,17 @@ So I started writing lambda culculus interpreter which is able to run backwards 
 
 Church numerals
 ---------------
-[Describing successor and summator.]
+[Successor and summator.]
 
 Running backwards
 -----------------
 [Subtracting with sucessor and summator.]
+[Generating successor and summator.]
+
+Combinatory logic
+-----------------
+[Proving that I=SKK.]
+[Exercises from Combinators Chemistry.]
 
 Recursion
 ---------
