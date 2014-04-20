@@ -1,0 +1,3 @@
+./hakyll clean && ./hakyll build && cd .. &&
+rm -rf hakutaku/* && # hidden files will be untouched, including .git/
+cp -r hakutaku-src/_site/* hakutaku
