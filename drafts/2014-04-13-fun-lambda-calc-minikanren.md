@@ -30,9 +30,10 @@ Let's see what we can do with the interpreter. First things you get to know in Î
   (lam f (lam x (app f (app f (app f x))))))
 
 (first (run* [q] (nom/fresh [n f x]
+  ;; What is the result applying successor to three?
   (eval-expo
     (app (ch-succ n f x) (ch3 f x))
-    q))))              ;; What is the result applying successor to three?
+    q))))
 
 => (fn [a_0] (fn [a_1] (a_0 (a_0 (a_0 (a_0 a_1))))))
 ```
@@ -59,8 +60,8 @@ Of course we can do Combinatory logic. Let's try. SKI combinator calculus is ind
 ```clojure
 (run 1 [q] (nom/fresh [x y xx yy a b c]
   (eval-expo
-    (app (app (app (S a b c) (K x y)) (K xx yy)) q) ;; SKKq ?= q
-    q)))
+    (app (app (app (S a b c) (K x y)) (K xx yy)) q)
+    q)))      ;; SKKq ?= q
 
 => (_0)
 ```
