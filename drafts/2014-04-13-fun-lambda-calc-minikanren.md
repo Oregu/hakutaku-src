@@ -17,6 +17,8 @@ Lambda culculus interpreter
 ---------------------------
 So I started writing lambda culculus interpreter which is able to run backwards producing terms. First attempt was to simply adapt [Will](https://github.com/webyrd)'s interpreter to work with Lambda-Calculus. If you only new how I was wrong… This attempt deserves it's [branch](https://github.com/Oregu/untyped/tree/naive) on Github. That's the hard way I knew about capture-avoiding substitutions. And only after that I realized what [alphaKanren](https://github.com/webyrd/alphaKanren) is really for.
 
+To implement interpreter I adapted Will's relation interpreter used for quines generation and added his (slightly modified) capture-avoiding substo function (adapted from [alphaProlog](http://homepages.inf.ed.ac.uk/jcheney/programs/aprolog/)). You can find `eval-expo` function under [untyped.core](https://github.com/Oregu/untyped/blob/master/src/untyped/core.clj) namespace.
+
 Church numerals
 ---------------
 Let's see what we can do with the interpreter. First things you get to know in λ-calculus are Church numerals. Let's define some numerals and do fun stuff with them:
@@ -77,13 +79,54 @@ Now back to fun again: how does quine looks like in λ-calculus?
 ```
 We asked interpreter to produce expression which on evaluation will produce itself. We asked it to produce two answers. First one is a lambda abstraction which is a normal form and indeed will be evaluated to itself (I wonder whether it is a correct behavior). And the second one, what is this? Big omega is a second answer: `Ω=(λx.xx)(λx.xx)`. But I should admit, that it's not in normal form. It looks more like `(Iλx.xx)(Iλx.xx)`, but after normalizing terms in brackets we have our `Ω` which is still cool.
 
+The point of it all: An Eater Function
+--------------------------------------
+My initial idea was to produce such function, that will eat it's arguments one by one and never satisfies. In “Introduction to Lambda Calculus” it's called eater function. Another names I found are K~∞~ or K~\*~ combinators and even [A Hopelessly Egocentric Bird](http://en.wikipedia.org/wiki/To_Mock_a_Mockingbird) `B`. (I tried to find where I saw K~∞~ and K~\*~ names but couldn't, so if you now where are they came from, [let me know](mailto:thehakutaku@gmail.com).)
+
+An eater function is a term defined by following expression: `Ex=E`. It's easy definable through fixed point combinator as K combinator applied to Y: `YK ≡ K(YK) ≡ (λxk.x)(YK) ≡ λk.(YK)`
+
+Now let's ask miniKanren to produce an eater with a simple equation `eval (q x) = q`:
+```clojure
+(run 1 [q] (nom/fresh [x]
+  (eval-expo (app q x) q)))
+
+=> ((((fn [a_0] a_0) (fn [a_1] (fn [a_2] a_1)))
+     ((fn [a_3] (a_3 _4)) (_5 (fn [a_6] (fn [a_7] a_6)))))
+  :-
+  (!= (((fn [a_3] (a_3 _4)) (_5 (fn [a_6] (fn [a_7] a_6)))) a_8))
+  (!= (_8 a_9))
+  not-fn?
+  nom?
+  (!= ((fn [a_0] a_0) a_8))
+  a_2#_4
+  a_2#_5
+  (!= ((fn [a_0] a_0) fn))
+  a_2#clojure.lang.LazySeq@c6fe0969
+```
+It spits a lot of stuff, where function is before `:-` sign. Let's translate: `((λi.i)(λxk.x))((λa.(a _4))(_5 λyz.y))` where _4 and _5 are some terms (which I don't know where came from). Well, it looks like a nonsense.
+
+Now some mistery part: right before writing this part of post I switched from Ubuntu to Mint, so I had to reinstall lein and all the dependencies. And now it returns some bullshit instead of the one I got before! While I'm investigating on it, let me show what it returned me:
+```clojure
+(((fn [a_0] a_0) (fn [a_1] (fn [a_2] (a_1 a_1))))
+ (_5 (fn [a_3] (a_4 (a_3 a_3)))))
+```
+Yes, it had this “I don't know where it came from” `_5` term. But if you just throw it out, you will get nice looking eater function! Check this out:
+
+`((λi.i)(λab.aa))(λxy.xx) ≡ (λab.aa)(λxy.xx) ≡ λb.(λxy.xx)(λxy.xx)`
+
+So here's optimised answer: `λb.(λxy.xx)(λxy.xx)`. I claim that I found it with the magic of miniKanren, but I'm not able to repeat it for you unfortunately!
+
+The term `λab.aa` is [called](http://www.angelfire.com/tx4/cus/combinator/birds.html) Crossed Konstant Mocker, so if you call out Crossed Konstant Bird to Mocking bird you will get A Hopelessly Egocentric Bird back! Pure joy.
+
 Recursion
 ---------
-[Generating Y.]
+If you've read this far, you must be wondering whether can we generate fixed-point combinator with relational interpreter. Answer is yes, we can. But I can't. I'll give you a link to [Will's](https://github.com/webyrd/) [alphaKanren repo](https://github.com/webyrd/alphaKanren/blob/master/tests.scm#L980) where he is able to generate `Y` within 7 minutes with simple hint. His test 68 produces `Y` with single step evaluator borrowed from [alphaProlog](http://homepages.inf.ed.ac.uk/jcheney/programs/aprolog/).
 
-Where it all started: a greedy function
----------------------------------------
-[K infinity.]
+Conclusion
+----------
+[Appearing identities]
+[Recursion terms] 
+[Terms functions]
 
 Resources
 ------------
