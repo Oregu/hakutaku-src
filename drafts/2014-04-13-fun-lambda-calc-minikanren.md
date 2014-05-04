@@ -7,20 +7,20 @@ _Work in progress_
 
 A year back I came in front of Dan Friedman and Will Byrd presentation called [Fun with Relational Interpreters in miniKanren](http://2013.flatmap.no/danwill.html). Which stroke me momentally. They presented a technique which allows you to generate infinite amount of quines. And not just that, but twines, thrines and other automatically generated programs with properties you want them to have. Why? How is that? What type of magic is this? And you don't have to use special language for that. It's right in your host language: in Racket as miniKanren or in Clojure as core.logic.
 
-Quines generator
-----------------
+## Quines generator
+
 Being a clojure programmer I wanted to undertand how all this works. So I started translating original [quines generator](https://github.com/webyrd/quines) to Clojure. You can find result in my [clojure quines](https://github.com/Oregu/clj-quines) repo. That was pretty painful. I didn't new anything of Racket, especially commas for symbol substitution and `define-syntax` stuff.
 
 So, after translating quines generator I wanted to proceed. I wanted to generate things and next interesting puzzle I found for miniKanren is lambda calculus/combinatory logic terms generation. At the time I was reading wonderful [Introduction to Lambda Calculus](http://www.cse.chalmers.se/research/group/logic/TypesSS05/Extra/geuvers.pdf). And there was an exercise: write a combinator such that `Fx=F`. Which is an interesting task on it's own. But with miniKanren… this can be really adventurous.
 
-Lambda culculus interpreter
----------------------------
+## Lambda culculus interpreter
+
 So I started writing lambda culculus interpreter which is able to run backwards producing terms. First attempt was to simply adapt [Will](https://github.com/webyrd)'s interpreter to work with Lambda-Calculus. If you only new how I was wrong… This attempt deserves it's [branch](https://github.com/Oregu/untyped/tree/naive) on Github. That's the hard way I knew about capture-avoiding substitutions. And only after that I realized what [alphaKanren](https://github.com/webyrd/alphaKanren) is really for.
 
-To implement interpreter I adapted Will's relation interpreter used for quines generation and added his (slightly modified) capture-avoiding substo function (adapted from [alphaProlog](http://homepages.inf.ed.ac.uk/jcheney/programs/aprolog/)). You can find `eval-expo` function under [untyped.core](https://github.com/Oregu/untyped/blob/master/src/untyped/core.clj) namespace.
+To implement interpreter I adapted Will's relation interpreter used for quines generation and added his (slightly modified) capture-avoiding substo function (which in turn adapted from [αProlog](http://homepages.inf.ed.ac.uk/jcheney/programs/aprolog/)). You can find `eval-expo` function under [untyped.core](https://github.com/Oregu/untyped/blob/master/src/untyped/core.clj) namespace.
 
-Church numerals
----------------
+## Church numerals
+
 Let's see what we can do with the interpreter. First things you get to know in λ-calculus are Church numerals. Let's define some numerals and do fun stuff with them:
 ```clojure
 (use 'untyped.core)
@@ -41,8 +41,8 @@ Let's see what we can do with the interpreter. First things you get to know in �
 ```
 In this example we defined Church successor as `λnfx.f(nfx)` and number three `λfx.f(f(fx))`. And evaluating application gives us a term which can be translated back as `λfx.f(f(f(fx)))` which is a Church four indeed. Here `a_0` and `a_1` are distinct noms.
 
-Running backwards
------------------
+## Running backwards
+
 Ok, that was straitforward, let's try something trickier. It's easy to obtain successor for Church numeral, but not predecessor. There are couple of predecessor functions defined in terms of predicates or even pairs, involving complex reasoning… But we won't go that path, let's decrease using increaser:
 ```clojure
 (first (run* [q] (nom/fresh [n f x]
@@ -56,8 +56,8 @@ Doesn't that answer remind you of something? Maybe it looks like term `λfx.f(fx
 
 You can find other experiments with Church numerals in [this file](https://github.com/Oregu/untyped/blob/master/src/untyped/church.clj) on Github. For example we can ask miniKanren to produce successor term and it will do so in 41 seconds! Even though I can't generate summator function without heavy hinting! That's a problem I'm working on.
 
-Combinatory logic
------------------
+## Combinatory logic
+
 Of course we can do Combinatory logic. Let's try. SKI combinator calculus is indeed Turing complete, but I heard oneday that even S and K are enough to fully represent λ-calculus. Let's try:
 ```clojure
 (run 1 [q] (nom/fresh [x y xx yy a b c]
@@ -79,8 +79,8 @@ Now back to fun again: how does quine looks like in λ-calculus?
 ```
 We asked interpreter to produce expression which on evaluation will produce itself. We asked it to produce two answers. First one is a lambda abstraction which is a normal form and indeed will be evaluated to itself (I wonder whether it is a correct behavior). And the second one, what is this? Big omega is a second answer: `Ω=(λx.xx)(λx.xx)`. But I should admit, that it's not in normal form. It looks more like `(Iλx.xx)(Iλx.xx)`, but after normalizing terms in brackets we have our `Ω` which is still cool.
 
-The point of it all: An Eater Function
---------------------------------------
+## The point of it all: An Eater Function
+
 My initial idea was to produce such function, that will eat it's arguments one by one and never satisfies. In “Introduction to Lambda Calculus” it's called eater function. Another names I found are K~∞~ or K~\*~ combinators and even [A Hopelessly Egocentric Bird](http://en.wikipedia.org/wiki/To_Mock_a_Mockingbird) `B`. (I tried to find where I saw K~∞~ and K~\*~ names but couldn't, so if you now where are they came from, [let me know](mailto:thehakutaku@gmail.com).)
 
 An eater function is a term defined by following expression: `Ex=E`. It's easy definable through fixed point combinator as K combinator applied to Y: `YK ≡ K(YK) ≡ (λxk.x)(YK) ≡ λk.(YK)`
@@ -118,18 +118,18 @@ So here's optimised answer: `λb.(λxy.xx)(λxy.xx)`. I claim that I found it wi
 
 The term `λab.aa` is [called](http://www.angelfire.com/tx4/cus/combinator/birds.html) Crossed Konstant Mocker, so if you call out Crossed Konstant Bird to Mocking bird you will get A Hopelessly Egocentric Bird back! Pure joy.
 
-Recursion
----------
+## Recursion
+
 If you've read this far, you must be wondering whether can we generate fixed-point combinator with relational interpreter. Answer is yes, we can. But I can't. I'll give you a link to [Will's](https://github.com/webyrd/) [alphaKanren repo](https://github.com/webyrd/alphaKanren/blob/master/tests.scm#L980) where he is able to generate `Y` within 7 minutes with simple hint. His test 68 produces `Y` with single step evaluator borrowed from [alphaProlog](http://homepages.inf.ed.ac.uk/jcheney/programs/aprolog/).
 
-Conclusion
-----------
+## Conclusion
+
 [Appearing identities]
 [Recursion terms] 
 [Terms functions]
 
-Resources
-------------
+## Resources
+
 - [Introduction to Lambda calculus](http://www.cse.chalmers.se/research/group/logic/TypesSS05/Extra/geuvers.pdf).
 - [Relational Programming in miniKanren: Techniques, Applications, and Implementations](http://gradworks.umi.com/3380156.pdf).
 - [Fun with Relational Interpreters in miniKanren](http://2013.flatmap.no/danwill.html).
