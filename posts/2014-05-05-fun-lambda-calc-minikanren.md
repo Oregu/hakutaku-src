@@ -1,6 +1,8 @@
 ---
 title: Fun with Lambda calculus Interpreters in miniKanren
 author: Oleg Prophet
+started: 2014-04-13
+finished: 2014-05-05
 ---
 
 A year back I came in front of Dan Friedman and Will Byrd presentation called [Fun with Relational Interpreters in miniKanren](http://2013.flatmap.no/danwill.html). Which stroke me momentally. They presented a technique which allows you to generate infinite amount of quines. And not just that, but twines, thrines and other automatically generated programs with properties you want them to have. Why? How is that? What type of magic is this? And you don't have to use special language for that. It's right in your host language: in Racket as miniKanren or in Clojure as core.logic.
