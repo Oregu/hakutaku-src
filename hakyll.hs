@@ -9,9 +9,12 @@ main = hakyll $ do
 
     match "pages/index.html" $ do
         route   pagesRoute
-        compile $ getResourceBody
-            >>= loadAndApplyTemplate "templates/index.html" defaultContext
-            >>= relativizeUrls
+        compile $ do
+            posts <- recentFirst =<< loadAll "posts/*"
+            getResourceBody
+                >>= applyAsTemplate (postsCtx posts)
+                >>= loadAndApplyTemplate "templates/index.html" defaultContext
+                >>= relativizeUrls
 
     match "pages/*" $ do
         route   pagesRoute

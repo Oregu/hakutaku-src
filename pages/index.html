@@ -1,21 +1,14 @@
-<div id='bg-left' class='bg'></div>
-<div id='bg-right' class='bg'></div>
+<div id="header">
+  <h1 class='title'>Oleg Prophet</h1>
+  <p>Passionate software developer<br/>from Saint-Petersburg, Russia</p>
+</div>
 <div id='content'>
-  <div id='left'>
-    <h1 class='title'>Oleg Prophet</h1>
-    <p>Hi, I'm Oleg<br/>Passionate software developer<br/>from Saint-Petersburg, Russia</p>
-
-    <ul class='social'>
-    	<li><a href='http://github.com/oregu' title='GitHub'><img src='/images/github.png' alt='GitHub'></a></li>
-    	<li><a href='http://www.linkedin.com/in/oregu' title='LinkedIn'><img src='/images/linkedin.png' alt='LinkedIn'></a></li>
-      <li><a href='http://twitter.com/oregu_desu' title='Twitter'><img src='/images/twitter.png' alt='Twitter'></a></li>
-    </ul>
-  </div>
-  <div id='right'>
-    <h1 title="β">Pages</h1>
-    <ul class='projects'>
-      <li><a href='/posts.html' title='Posts'>Posts</a></li>
-      <li><a href='/stuff.html' title='Stuff'>Stuff</a></li>
-    </ul>
-  </div>
+  <h2 title="β">Posts</h2>
+  $partial("templates/post-list.html")$
+  <h2>Social</h2>
+  <ul class='social'>
+    <li><a href='http://github.com/oregu'>Github</a></li>
+    <li><a href='http://www.linkedin.com/in/oregu'>Linkedin</a></li>
+    <li><a href='http://twitter.com/oregu_desu'>Twitter</a></li>
+  </ul>
 </div>
