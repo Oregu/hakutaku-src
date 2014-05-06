@@ -2,7 +2,18 @@ body {
   color: black;
   font-size: 16px;
   margin: 0px auto 0px auto;
-  max-width: 750px;
+}
+
+a:hover {
+  text-decoration:none;
+}
+
+img {
+  border-width:0;
+}
+
+h1, h2 {
+  margin: 0;
 }
 
 div#header {
@@ -30,6 +41,11 @@ div#header #navigation a {
   margin-left: 12px;
   text-decoration: none;
   text-transform: uppercase;
+}
+
+div#content {
+  margin: 0;
+  padding: 1.3em;
 }
 
 div#footer {
