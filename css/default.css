@@ -70,6 +70,10 @@ div.info {
   font-style: italic;
 }
 
+p.lic {
+  font-size: small;
+}
+
 ul.posts {
   list-style-type: none;
 }
