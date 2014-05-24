@@ -9,13 +9,13 @@ A year back I came in front of Dan Friedman and Will Byrd presentation called [F
 
 ## Quines generator
 
-Being a Clojure programmer I started translating original [quines generator](https://github.com/webyrd/quines) to Clojure. You can find result in my [clojure quines](https://github.com/Oregu/clj-quines) repo. That was pretty painful. I didn't new anything of Racket, especially commas for symbol substitution and `define-syntax` stuff.
+Being a Clojure programmer I started translating original [quines generator](https://github.com/webyrd/quines) to Clojure. You can find result in my [clojure quines](https://github.com/Oregu/clj-quines) repo. That was pretty painful. I didn't know anything of Racket, especially commas for symbol substitution and `define-syntax` stuff.
 
 So, after translating quines generator I wanted to proceed. I wanted to generate things and next interesting puzzle I found for miniKanren is lambda calculus/combinatory logic terms generation. At the time I was reading wonderful [Introduction to Lambda Calculus](http://www.cse.chalmers.se/research/group/logic/TypesSS05/Extra/geuvers.pdf) and there was an exercise: write a combinator such that `Ex=E`. Which is an interesting task on it's own. But with miniKanren… this can be really adventurous.
 
 ## Lambda calculus interpreter
 
-So I started writing λ-calculus interpreter which is able to run backwards producing terms. First attempt was to simply adapt [Will](https://github.com/webyrd)'s interpreter to work with λ-calculus. If you only new how I was wrong… This attempt deserves it's [branch](https://github.com/Oregu/untyped/tree/naive) on Github. That's the hard way I knew about capture-avoiding substitutions. And only after that I realized what [alphaKanren](https://github.com/webyrd/alphaKanren) is really for.
+So I started writing λ-calculus interpreter which is able to run backwards producing terms. First attempt was to simply adapt [Will](https://github.com/webyrd)'s interpreter to work with λ-calculus. If you only knew how I was wrong… This attempt deserves it's [branch](https://github.com/Oregu/untyped/tree/naive) on Github. That's the hard way I knew about capture-avoiding substitutions. And only after that I realized what [alphaKanren](https://github.com/webyrd/alphaKanren) is really for.
 
 I enhanced Will's relation interpreter with noms and added Will's (slightly modified) capture-avoiding `substo` function (which in turn adapted from [αProlog](http://homepages.inf.ed.ac.uk/jcheney/programs/aprolog/)). You can find `eval-expo` function under [untyped.core](https://github.com/Oregu/untyped/blob/master/src/untyped/core.clj) namespace.
 
